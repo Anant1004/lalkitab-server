@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Marks Card</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 5px 25px;
+            background: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .bord-logo img{
+            width: 200px;
+            height: 145px;
+            overflow: hidden;
+        }
+        .school-logo img {
+            width: 150px;
+            height: 139px;
+            object-fit: cover;
+        }
+
+        .school-info {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .school-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #7117EA;
+
+        }
+
+        .school-desc {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #333;
+            font-weight: 500;
+        }
+
+
+        .session-info {
+            font-size: 14px;
+            margin-top: 12px;
+            font-weight: bold;
+            color:#0000EE;
+        }
+
+        .result-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #019982;
+        }
+
+
+        .student-info-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+
+        .student-info-left,
+        .student-info-right {
+            font-size: 13px;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 13px;
+        }
+
+        .table tr td {
+            text-align: left;
+            font-size: small;
+        }
+
+        .table-header {
+            background: #f5e030;
+            font-size: small;
+            font-weight: bold;
+        }
+
+        .table-sub-header {
+            font-size: small;
+            background: #4295c5;
+
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: center;
+        }
+
+
+        .footer {
+            text-align: left;
+            margin-top: 6px;
+            font-size: 12px;
+        }
+
+        .signature-line {
+            border-bottom: 2px solid #000;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        .footer-sign {
+            display: flex;
+            padding-right: 60px;
+            justify-content: space-between;
+        }
+
+        .tables-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .clearfix {
+            text-align: center;
+            font-weight: 700;
+            font-size: 11px;
+            margin: 0px;
+        }
+
+        .clearfix p {
+            margin-top: -2px;
+            font-size: 11px;
+        }
+
+        .table {
+            width: 48%;
+        }
+
+        .page-break {
+            margin: 0px;
+            border-bottom: 2px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="bord-logo">
+                <img src="<%= schoolInfo.boardLogo %>"
+                    alt="Board Logo">
+            </div>
+            <div class="school-info">
+                <div class="school-name">
+                    <%= schoolInfo.schoolName %>
+                </div>
+                <div class="school-desc">Affiliated to <%= schoolInfo.boardName %>, Affiliation No. <%= schoolInfo.affiliationNo %>
+                </div>
+                <div class="school-desc"><%= schoolInfo.address %>, Bokaro ,<%= schoolInfo.state %>
+                </div>
+                <div class="school-desc">Ph: <%= schoolInfo.phone %>, Email: <%=schoolInfo. email %>
+                </div>
+                <div class="session-info">Academic Session: <%= session %>
+                </div>
+                <div class="result-name"> <%= examinationName %> Report Card</div>
+            </div>
+            <div class="school-logo">
+                <img src="<%= schoolInfo.schoolLogo %>"
+                    alt="School Logo">
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="student-info-container">
+        <div class="student-info-left">
+            <p><strong>Student's Name:</strong>
+                <%= studentInfo.studentID.name %>
+            </p>
+            <p><strong>Father's Name:</strong>
+                <%= studentInfo.studentID.fatherName %>
+            </p>
+            <p><strong>Mother's Name:</strong>
+                <%= studentInfo.studentID.motherName %>
+            </p>
+            <p><strong>Date of Birth:</strong>
+                <%= formattedDOB %>
+            </p>
+
+        </div>
+        <div class="student-info-right">
+            <p><strong>Roll No:</strong>
+                <%= studentInfo.studentID.rollNo %>
+            </p>
+            <p><strong>Gender:</strong>
+                <%= studentInfo.studentID.gender %>
+            </p>
+            <p><strong>Class:</strong>
+                <%= studentInfo.classID.className %>
+            </p>
+            <p><strong>Section:</strong>
+                <%= studentInfo.sectionID.sectionName %>
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Main table -->
+    <table>
+        <thead>
+            <tr class="table-header">
+                <th colspan="1">Scholastic Area</th>
+                <th colspan="6">Term-1</th>
+                <th colspan="6">Term-2</th>
+            </tr>
+            <tr class="table-sub-header">
+                <th rowspan="2">Subject Name</th>
+                <th>Periodic <br /> Test</th>
+                <th>Note<br />book</th>
+                <th>SEA</th>
+                <th>Half yearly</th>
+                <th>Total</th>
+                <th>Grade</th>
+                <th>Periodic <br/> Test</th>
+                <th>Note<br />book</th>
+                <th>SEA</th>
+                <th>Half yearly</th>
+                <th>Total</th>
+                <th>Grade</th>
+            </tr>
+            <tr class="table-sub-header">
+                <th>10</th>
+                <th>5</th>
+                <th>5</th>
+                <th>80</th>
+                <th>100</th>
+                <th></th>
+                <th>10</th>
+                <th>5</th>
+                <th>5</th>
+                <th>80</th>
+                <th>100</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody style="font-size: small;">
+            <% for (var i=0; i < subjects.length; i++) { %>
+                <tr>
+                    <td style="text-align: left; padding-left: 10px;">
+                        <%= subjects[i].name %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term1.PeriodicTest1 %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term1.NoteBook1 %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term1.SubjectEnrichment1 %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term1.HalfYearly %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term1.total %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term1.grade %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term2.PeriodicTest2 %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term2.NoteBook2 %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term2.SubjectEnrichment2 %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term2.AnnualExam %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term2.total %>
+                    </td>
+                    <td>
+                        <%= subjects[i].term2.grade %>
+                    </td>
+                </tr>
+                <% } %>
+        </tbody>
+    </table>
+
+    <div class="tables-container">
+        <!-- First additional table -->
+        <table class="table">
+            <thead>
+                <tr class="table-header">
+                    <th>Co-Scholastic Areas: Term-1 <br />
+                        (on a 3 point (A-C) grading scale)</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Work Education (or Pre-vocational Education)</td>
+                    <td style="text-align: center;">
+                        A
+                    </td>
+                </tr>
+                <tr>
+                    <td>Art Education</td>
+                    <td style="text-align: center;">
+                        B
+                    </td>
+                </tr>
+                <tr>
+                    <td>Health & Physical Education</td>
+                    <td style="text-align: center;">
+                        B
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Second additional table -->
+        <table class="table">
+            <thead>
+                <tr class="table-header">
+                    <th>Co-Scholastic Areas: Term-2 <br />(on a 3 point (A-C) grading scale)</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Work Education (or Pre-vocational Education)</td>
+                    <td style="text-align: center;">
+                        A
+                    </td>
+                </tr>
+                <tr>
+                    <td>Art Education</td>
+                    <td style="text-align: center;">
+                        C
+                    </td>
+                </tr>
+                <tr>
+                    <td>Health & Physical Education</td>
+                    <td style="text-align: center;">
+                        A
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    
+    </div>
+
+    <div class="tables-container">
+        <!-- Term 1 Table -->
+        <table class="table">
+            <thead>
+                <tr class="table-header">
+                    <th>Overall  Performance: Term-1</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total Marks Earned</td>
+                    <td style="text-align: center;"><%= overallMarks.term1.overallTotal %> / <%= (subjects.length * 100) %></td>
+                </tr>
+                <tr>
+                    <td>Total Percentage Marks</td>
+                    <td style="text-align: center;"><%= overallMarks.term1.overallPercentage %>%</td>
+                </tr>
+                <!-- <tr>
+                    <td>Grade</td>
+                    <td><%= overallMarks.term1.overallGrade %></td>
+                </tr> -->
+            </tbody>
+        </table>
+    
+        <!-- Term 2 Table -->
+        <table class="table">
+            <thead>
+                <tr class="table-header">
+                    <th>Overall Performance: Term-2</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total Marks Earned</td>
+                    <td style="text-align: center;"><%= overallMarks.term2.overallTotal %> / <%= (subjects.length * 100) %></td>
+                </tr>
+                <tr>
+                    <td>Total Percentage Marks</td>
+                    <td style="text-align: center;"><%= overallMarks.term2.overallPercentage %>%</td>
+                </tr>
+                <!-- <tr>
+                    <td>Grade</td>
+                    <td><%= overallMarks.term2.overallGrade %></td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+    
+    <table>
+        <thead>
+            <tr class="table-header">
+                <th>Overall Marks</th>
+                <th>Percentage Marks</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody style="font-weight: 700; font-size: small;">
+            <tr>
+                <td><%= overallMarks.overallTotal %> / <%= (subjects.length * 100 * 2) %></td>
+                <td><%= overallMarks.overallPercentage.toFixed(2) %>%</td>
+                <td><%= overallMarks.overallGrade %></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+
+    <div class="footer">
+        <p>
+            <strong>Class Teacher Remark :</strong>
+            <span class="signature-line">
+                <%= overallMarks.remarks %>
+            </span>
+        </p>
+        
+        <p class="sign-dashed">Place :
+            <span class="sign-dashed"><%= schoolInfo.city %> , <%= schoolInfo.state %></span>
+        <p>
+        <div class="footer-sign">
+            <p>Date : <span class="sign-dashed"><%= date  %></span></p>
+            <p>Signature of Class Teacher</p>
+            <p>Signature of Principal</p>
+        </div>
+        <hr class="page-break" />
+    </div>
+    <div class="clearfix">
+        <p ></p>Instructions</p>
+        <p>Grading Scale for scholastic areas: Grades are awaded on a 9- point grading scale as follows</p>
+
+    </div>
+    <table style="font-size:x-small;">
+        <thead style="font-size:x-small;" class="table-header">
+            <tr>
+                <th>Marks Range</th>
+                <th>91-100</th>
+                <th>81-90</th>
+                <th>71-80</th>
+                <th>61-70</th>
+                <th>51-60</th>
+                <th>41-50</th>
+                <th>33-40</th>
+                <th>21-32</th>
+                <th>00-20</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Grade</td>
+                <td>A1</td>
+                <td>A2</td>
+                <td>B1</td>
+                <td>B2</td>
+                <td>C1</td>
+                <td>C2</td>
+                <td>D</td>
+                <td>E1</td>
+                <td>E2</td>
+            </tr>
+        </tbody>
+        
+    </table>
+    
+    
+
+    </div>
+</body>
+
+</html>

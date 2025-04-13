@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Receipt</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px 20px;
+            padding: 10px 10px;
+            background: #fff;
+        }
+
+        .header {
+            display: inline-flex;
+            align-items: center;
+            margin: 10px 20px 0px 0px;
+            color: #000;
+        }
+
+        .school-logo img {
+            width: 140px;
+            height: 130px;
+            object-fit: cover;
+        }
+
+        .school-info {
+            margin-left: 70px;
+            text-align: center;
+        }
+
+        .school-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .school-desc {
+            margin-top: 4px;
+            font-size: small;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .session-info {
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .result-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #333;
+        }
+
+        .receipt {
+            border: 2px solid #000;
+            padding: 20px;
+            margin: 20px;
+            max-width: 700px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .student-info-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+
+        .student-info-left,
+        .student-info-right {
+            font-size: medium;
+            margin-right: 15px;
+        }
+
+        .info {
+            margin-bottom: 10px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .footer-sign {
+            margin-top: 40px;
+            display: flex;
+            padding-right: 10px;
+            justify-content: space-between;
+        }
+
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: medium;
+        }
+        .fee-table th {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        .fee-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        .row span {
+            flex: 1;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="receipt">
+        <div class="header">
+            <div class="school-logo">
+                <img src="<%= schoolInfo.schoolLogo %>" alt="School Logo" />
+            </div>
+            <div class="school-info">
+                <div class="school-name">
+                    <%= schoolInfo.schoolName %>
+                </div>
+                <div class="school-desc">
+                    <%= schoolInfo.address %>, Bokaro, Jharkhand
+                </div>
+                <div class="school-desc">Ph: <%= schoolInfo.phone %>, Email: <%= schoolInfo.email %>
+                </div>
+
+                <div class="session-info">
+                Academic Session <%= feeDetails.year %>
+                </div>
+                <div class="result-name">School Fee Receipt
+                </div>
+            </div>
+        </div>
+        <div>
+            <span>Receipt Id:</span>
+            <span><%- feeDetails._id  %></span>
+            
+            <hr style="border: 2px solid  #333;" />
+        </div>
+        <div class="student-info-container"> 
+            <div class="student-info-left">
+                <p><strong>Name of Student:</strong>
+                    <%= studentInfo.studentID.name %>
+                </p>
+                <p><strong>Data of Payment:</strong>
+                    <%= dateofPayment %>
+                </p>
+                <p><strong>Mode of Payment </strong>
+                    <%= method %>
+                </p>
+    
+            </div>
+            <div class="student-info-right">
+                <p><strong>Gender:</strong>
+                    <%= studentInfo.studentID.gender %>
+                </p>
+                <p><strong>Class:</strong>
+                    <%= studentInfo.classID.className %>
+                </p>
+                <p><strong>Section:</strong>
+                    <%= studentInfo.sectionID.sectionName %>
+                </p>
+            </div>
+        </div>
+       
+        <table class="fee-table">
+            <thead>
+                <tr>
+                    <th>Sl. No.</th>
+                    <th>Particulars</th>
+                    <th>Amount  (Rs.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Previous Balance</td>
+                    <td> <%= feeDetails.prevBalance %></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Current Due</td>
+                    <td> <%= feeDetails.currentDue %></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">Total Payable Amount</td>
+                    <td style="font-weight: 700;"><%= feeDetails.feeDue %></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">Total Amount Paid</td>
+                    <td><%= feeDetails.feeCollected %></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">Balance Amount</td>
+                    <td style="font-weight: 700;">Rs. <%= feeDetails.balance %></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="footer-sign">
+            <p>Signature of Student</p>
+            <p>Signature of Accountant</p>
+        </div>
+
+        <div class="footer">
+            
+            <p> <span style="font-weight: 600;">Note:</span> All Above Mention Amount Once Paid are not refundable in any case !</p>
+        </div>
+    </div>
+</body>
+</html>

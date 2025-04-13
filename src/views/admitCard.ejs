@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admit Card</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px 20px;
+      padding: 10px 10px;
+      background: #fff;
+      border: 2px solid #000;
+    }
+
+    .container {
+      max-width: 900px;
+    }
+
+    .header {
+      display: inline-flex;
+      align-items: center;
+      margin: 10px 20px 0px 0px;
+      color: #000;
+    }
+
+        .school-logo img {
+            width: 160px;
+            height: 139px;
+            object-fit: cover;
+        }
+
+    .school-info {
+      margin-left: 70px;
+      text-align: center;
+    }
+
+    .school-name {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .school-desc {
+      margin-top: 4px;
+      font-size: small;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .session-info {
+      font-size: 15px;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    .result-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 8px;
+      color: #019982;
+    }
+
+    .content {
+      margin-left: 10px;
+    }
+
+    .examinee-info {
+      margin-top: 18px;
+    }
+
+    .examinee-info p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .attribute {
+      display: inline-block;
+      width: 120px;
+      font-size: small;
+      font-weight: bold;
+    }
+
+    .colon {
+      display: inline-block;
+      width: 30px;
+      text-align: right;
+      font-weight: bold;
+      font-size: small;
+
+    }
+
+    .value {
+      display: inline-block;
+      width: calc(100% - 250px);
+      /* Adjust as needed */
+      border-bottom: 1px dashed #000;
+      margin-left: 10px;
+      /* Adjust as needed for gap between colon and value */
+      padding-left: 10px;
+      font-size: small;
+      font-weight: bold;
+
+    }
+
+    .footer-sign {
+      margin-top: 70px;
+      padding-right: 70px;
+      display: 1;
+      text-align: right;
+    }
+
+    .footer-sign p {
+      margin-top: 0px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="school-logo">
+        <img src="<%= schoolInfo.schoolLogo %>"
+          alt="School Logo" />
+      </div>
+      <div class="school-info">
+        <div class="school-name">
+          <%= schoolInfo.schoolName %>
+        </div>
+        <div class="school-desc">
+          Affiliated to <%= schoolInfo.boardName %>, Affiliation No. <%= schoolInfo.affiliationNo %>
+        </div>
+        <div class="school-desc">
+         <%= schoolInfo.address %>, <%= schoolInfo.city %>, <%= schoolInfo.state %>
+        </div>
+        <div class="school-desc">Ph: <%= schoolInfo.phone %>, Email: <%= schoolInfo.email %>
+        </div>
+
+        <div class="session-info">
+          <%= examinationName %> Exam Academic Session <%= session %>
+        </div>
+        <div class="result-name">Admit Card</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="examinee-info">
+        <p>
+          <span class="attribute">Student Name</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.studentID.name %>
+          </span>
+        </p>
+        <p>
+          <span class="attribute">Father Name</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.studentID.fatherName %>
+          </span>
+        </p>
+        <p>
+          <span class="attribute">Mother Name</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.studentID.motherName %>
+          </span>
+        </p>
+        <p>
+          <span class="attribute">Class Name</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.classID.className %> 
+          </span>
+        </p>
+        <p>
+          <span class="attribute">Section</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.sectionID.sectionName %>
+          </span>
+        </p>
+        <p>
+          <span class="attribute">DOB</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= formattedDOB %>
+          </span>
+        </p>
+        <p>
+          <span class="attribute">Gender</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.studentID.gender %>
+          </span>
+        </p>
+        <p>
+          <span class="attribute">Roll No</span>
+          <span class="colon">:</span>
+          <span class="value">
+            <%= studentInfo.studentID.rollNo %>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-sign">
+      <p>Signature of Principal</p>
+    </div>
+  </div>
+</body>
+
+</html>

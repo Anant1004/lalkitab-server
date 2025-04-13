@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f3f3f3;
+    }
+    .certificate {
+      width: 70%;
+      margin: auto;
+      padding-right: 20px;
+      padding-left: 20px;
+      padding-bottom: 10px;
+      padding-top: 10px;
+      border: 2px solid #d4a317;
+      border-radius: 10px;
+      background-color: #ffffff;
+      position: relative;
+    }
+    .header {
+      font-size: 30px;
+      font-weight: bold;
+      color: #b93128;
+    }
+    .sub-header {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .name {
+      font-size: 40px;
+      font-weight: bold;
+      color: #000;
+      margin: 20px 0;
+    }
+    .content {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .footer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between; 
+    }
+    .date {
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-decoration-line: underline;
+    }
+    .signature {
+      font-style: italic;
+      font-size: 16px;
+    }
+    .ceo {
+      font-weight: bold;
+    }
+    .stamp {
+      width: 60px;
+      height: 60px;
+      background: red;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 10px;
+    }
+    .border-top,
+    .border-bottom {
+      height: 5px;
+      background: #d4a317;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="certificate">
+    <div class="border-top"></div>
+    <div class="header">CERTIFICATE</div>
+    <div class="sub-header">THIS CERTIFICATE IS PRESENTED TO</div>
+    <div class="name"><%= studentName %></div>
+    <div class="content">
+      We (Maa Patal Devi Jyotish), hereby, pronounce that you<br>
+      have achieved a great feat in the category of (All Knowledgeable Methods Books In Astrology Filed and Right Way Of Work Direction)<br>
+      and we appreciate your efforts and certify you for the same.
+    </div>
+    <div class="footer">
+        <div>
+      <div class="date"><%= completionDate %></div>
+      <div>DATE</div>
+      </div>
+      <div class="stamp"></div>
+      <div class="signature">CEO Astrologer NASHIK</div>
+    </div>
+    <div class="border-bottom"></div>
+  </div>
+</body>
+</html>

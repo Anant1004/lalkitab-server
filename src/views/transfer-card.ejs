@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSFER CERTIFICATE</title>
+    <style>
+          * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px 20px;
+      padding: 10px 10px;
+      background: #fff;
+      border: 2px solid #000;
+    }
+
+    .container {
+      max-width: 900px;
+    }
+
+    .header {
+      display: inline-flex;
+      align-items: center;
+      margin: 10px 20px 0px 0px;
+      color: #000;
+    }
+
+        .school-logo img {
+            width: 160px;
+            height: 139px;
+            object-fit: cover;
+        }
+
+    .school-info {
+      margin-left: 70px;
+      text-align: center;
+    }
+
+    .school-name {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .school-desc {
+      margin-top: 4px;
+      font-size: small;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .session-info {
+      font-size: 15px;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    .result-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 8px;
+      color: #019982;
+    }
+        .examinee-info {
+            margin-top: 18px;
+        }
+
+        .examinee-info p {
+            margin: 5px 0;
+            font-size: 20px;
+            position: relative; 
+        }
+
+        .attribute {
+            display: inline-block;
+            width: 400px; 
+            font-size: medium;
+            font-weight: bold;
+        }
+
+        .value {
+            display: inline-block;
+            font-size: medium;
+            font-weight: bold;
+            vertical-align: top; /* Added */
+            margin-left: 10px; /* Added */
+        }
+
+        .dashed-line {
+            border-bottom: 1px dashed #000;
+            position: absolute; /* added */
+            top: 1.3em; /* Adjust as needed */
+            left: 450px; /* Adjust as needed */
+            width: calc(100% - 450px); /* Adjust as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="school-logo">
+          <img src="<%= schoolInfo.schoolLogo %>"
+            alt="School Logo" />
+        </div>
+        <div class="school-info">
+          <div class="school-name">
+            <%= schoolInfo.schoolName %>
+          </div>
+          <div class="school-desc">
+            Affiliated to <%= schoolInfo.boardName %>, Affiliation No. <%= schoolInfo.affiliationNo %>
+          </div>
+          <div class="school-desc">
+           <%= schoolInfo.address %>, <%= schoolInfo.city %>, <%= schoolInfo.state %>
+          </div>
+          <div class="school-desc">Ph: <%= schoolInfo.phone %>, Email: <%= schoolInfo.email %>
+          </div>
+  
+    
+          <div class="result-name">TRANSFER CERTIFICATE</div>
+        </div>
+      </div>
+  
+    <div class="examinee-info">
+        <p>
+            <span class="attribute">1. Name of Pupil</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">2. Father's / Guardian's Name</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">3. Mother's Name</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">4. Whether the candidate belongs to SC, ST, OBC or any other</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">5. Nationality</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">6. Date of admission in the school with class/sec</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">7. Date of birth (in Christian Era) according to the Admission Register (in Figures) (In words )</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">8. Class in which the pupil last studied</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">9. School / Board Examination last taken</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">10. Whether failed, if so, once / twice in the same class</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">11. Subjects studied</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">12. Whether qualified for promotion to the higher class if so, to which class</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">13. Month upto which the (pupil has paid) school dues paid</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">14. Any fee concession availed of. If so, the nature of such concession</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">15. Total No. of working days</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">16. Total No. of working days present</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">17. Whether NCC Cadet / Boy Scout / Girl Guide (details may be given)</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">18. Games played or extra-curricular activities in which the pupil usually took part (Mention achievement level there in)</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">19. General conduct</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">20. Date of application for certificate</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">21. Date of issue of certificate</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">22. Reasons for leaving the school</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+        <p>
+            <span class="attribute">23. Any other remarks</span>
+            <span class="value"></span>
+            <span class="dashed-line"></span>
+        </p>
+    </div>
+</body>
+</html>
