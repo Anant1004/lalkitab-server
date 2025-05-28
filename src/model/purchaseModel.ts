@@ -12,12 +12,12 @@ const PurchaseSchema = new Schema<IPurchase>(
     {
         userId: {
             type: mongoose.Types.ObjectId,
-            ref: 'Users',
+            ref: 'User',
             required: true
         },
         courseId: {
             type: mongoose.Types.ObjectId,
-            ref: 'Courses',
+            ref: 'Course',
             required: true
         },
         purchaseDate: {

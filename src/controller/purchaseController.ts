@@ -38,7 +38,7 @@ export const makePurchase = async (req: MulterRequest, res: Response) => {
 
 export const getAllPurchase = async (req: Request, res: Response) => {
   try {
-    const purchases = await db.Purchase.find()
+    const purchases = await db.Purchase.find().populate("userId").populate("courseId");
     if (!purchases) {
       return sendResponse(res, 'No purchases found', null, false, 404);
     }
