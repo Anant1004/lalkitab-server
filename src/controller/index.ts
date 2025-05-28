@@ -9,7 +9,7 @@ import * as EbooksController from './ebookController';
 import * as CoursesController from './courseController';
 import * as PurchaseController from './purchaseController';
 import * as YouTubeController from './youtubeController';
-// import * as PaymentController from './paymentController'
+import * as PaymentController from './paymentController'
 
 export default {
   UserController,
@@ -23,5 +23,5 @@ export default {
   CoursesController,
   PurchaseController,
   YouTubeController,
-  // PaymentController
+  PaymentController
 };

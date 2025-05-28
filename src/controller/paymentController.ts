@@ -44,3 +44,138 @@
 //     return sendResponse(res, 'Internal Server Error', null, false, 500);
 //   }
 // };
+
+
+
+import { Request, Response, NextFunction } from 'express';
+import Payment from '../model/paymentModel';
+import Purchase from '../model/purchaseModel';
+import { uploadToCloudinary } from '../utils/storage';
+
+interface MulterRequest extends Request {
+  file?: any;
+  files?: any;
+}
+
+export const createPayment = async ( 
+  req: MulterRequest,
+  res: Response,
+  next: NextFunction) => {
+  try {
+    const { userId, purchaseId } = req.body;
+
+    // 1. Validate purchaseId
+    if (!purchaseId) {
+      return res.status(400).json({ message: 'purchaseId is required' });
+    }
+
+    // 2. Check if purchase exists
+    const purchase = await Purchase.findById(purchaseId);
+    if (!purchase) {
+      return res.status(404).json({ message: 'Purchase not found' });
+    }
+
+    // 3. Check if file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: 'No payment proof uploaded' });
+    }
+
+    // 4. Upload to Cloudinary
+    const uploaded = await uploadToCloudinary(req.file.path);
+
+    // 5. Create Payment
+    const newPayment = new Payment({
+      userId,
+      purchaseId,
+      paymentProof: uploaded.url,
+      paymentStatus: 'Pending',
+    });
+
+    const savedPayment = await newPayment.save();
+
+    // 6. Update purchase status
+    // purchase.purchaseStatus = 'Completed';
+    await purchase.save();
+
+    // 7. Respond
+    res.status(201).json({
+      message: 'Payment created and purchase marked as Completed',
+      payment: savedPayment,
+    });
+
+  } catch (error) {
+    console.error('Payment creation error:', error);
+    res.status(500).json({ message: 'Payment creation failed', error });
+  }
+};
+
+// Get All Payments
+export const getPayments = async (req: Request, res: Response) => {
+  try {
+    const payments = await Payment.find()
+      .populate('userId', 'name email')       // user ke kuch fields populate karo
+      .populate('purchaseId')                 // purchase details populate karo
+      .exec();
+
+    res.status(200).json(payments);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch payments', error });
+  }
+};
+
+// Get Payment By ID
+export const getPaymentById = async (req: Request, res: Response) => {
+  try {
+    const paymentId = req.params.id;
+    const payment = await Payment.findById(paymentId)
+      .populate('userId', 'name email')
+      .populate('purchaseId')
+      .exec();
+
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    res.status(200).json(payment);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch payment', error });
+  }
+};
+
+// Update Payment (For example update paymentStatus or paymentProof)
+export const updatePayment = async (req: Request, res: Response) => {
+  try {
+    const paymentId = req.params.id;
+    const updateData = req.body;
+
+    const updatedPayment = await Payment.findByIdAndUpdate(paymentId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedPayment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    res.status(200).json(updatedPayment);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update payment', error });
+  }
+};
+
+// Delete Payment
+export const deletePayment = async (req: Request, res: Response) => {
+  try {
+    const paymentId = req.params.id;
+
+    const deletedPayment = await Payment.findByIdAndDelete(paymentId);
+
+    if (!deletedPayment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    res.status(200).json({ message: 'Payment deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete payment', error });
+  }
+};

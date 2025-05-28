@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+// import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
 const { v4: uuidv4 } = require('uuid');
 import fs from 'fs';
@@ -12,13 +12,14 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY,
   api_secret: process.env.CLOUDINARY_SECRET,
 });
+//                ../../../../../../apps/server/src/public/uploads
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(
       null,
       path.resolve(
         publicDir,
-        '../../../../../../apps/server/src/public/uploads'
+        '../public/uploads'
       )
     );
   },
