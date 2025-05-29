@@ -52,10 +52,11 @@ export const getAllPurchase = async (req: Request, res: Response) => {
 export const getPurchase = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
-    const purchases = await db.Purchase.find({ userId }).populate({ path: "userId", select: "-password" }).populate("courseId")
-    if (!purchases) {
-      return sendResponse(res, 'No purchases found', null, false, 404);
-    }
+    const purchases = await db.Purchase.find({ userId })
+      .select("-paymentProof")
+      .populate("courseId", "title status duration price"); if (!purchases) {
+        return sendResponse(res, 'No purchases found', null, false, 404);
+      }
     return sendResponse(res, "Purchases found", purchases);
   } catch (error) {
     console.error(error);
