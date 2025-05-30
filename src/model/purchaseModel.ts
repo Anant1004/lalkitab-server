@@ -26,7 +26,7 @@ const PurchaseSchema = new Schema<IPurchase>(
         },
         paymentStatus: {
             type: String,
-            enum: ['Pending', 'Success', 'Failed'],
+            enum: ['Pending', 'Completed', 'Rejected'],
             default: 'Pending'
         },
         paymentProof: {

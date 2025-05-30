@@ -1,72 +1,56 @@
 import { google, calendar_v3 } from 'googleapis';
-import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { sendResponse } from './responseUtils';
 import { Request, Response } from 'express';
-import moment from 'moment-timezone';
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
   process.env.REDIRECT_URL
 );
+
 oauth2Client.setCredentials({
   refresh_token: process.env.REFRESH_TOKEN,
 });
 
-// Define your credentials and calendar ID
+// Credentials and calendar ID
 const CREDENTIALS = JSON.parse(process.env.CREDENTIALS || '{}');
-// const CALENDAR_ID = '77ce23e0d852df84ea2af654517188c0772e6cf4469d6b41cd5841f8f5f6298b@group.calendar.google.com';
 const CALENDAR_ID = 'shouryajain0708@gmail.com';
-const SCOPES = ["https://www.googleapis.com/auth/calendar.events"
-,"https://www.googleapis.com/auth/calendar"
-]
+const SCOPES = [
+  'https://www.googleapis.com/auth/calendar.events',
+  'https://www.googleapis.com/auth/calendar',
+];
 
-const url = oauth2Client.generateAuthUrl({
-  access_type: 'offline', // To get a refresh token
-  scope: SCOPES,
-});
-
-
-// Authenticate using service account
-export const authenticateServiceAccount = async () => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: CREDENTIALS,
-    scopes: SCOPES,
-  });
-  return await auth.getClient();
-};
+// Google Auth client using JWT (service account)
 export const auth = new google.auth.JWT(
   CREDENTIALS.client_email,
-  null,
+  undefined,
   CREDENTIALS.private_key,
   SCOPES
 );
 
-// const subtractOffset = (dateTime) => {
-//   const date = new Date(dateTime);
-//   // Subtract 5 hours and 30 minutes
-//   date.setHours(date.getHours() - 5);
-//   date.setMinutes(date.getMinutes() - 30);
-//   return date.toISOString();
-// };
-
+// List events from Google Calendar
 export const listEvents = async (req: Request, res: Response) => {
-  const calendar = google.calendar({ version: 'v3', auth });
-  const now = new Date().toISOString();
-  const tomorrow = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
-  
-    const response = await calendar.events.list({
-    calendarId: CALENDAR_ID,
-    timeMin: now,
-    timeMax: tomorrow,
-    singleEvents: true,
-    orderBy: 'startTime',
-    timeZone: 'Asia/Kolkata',
-  });
+  try {
+    const calendar = google.calendar({ version: 'v3', auth });
+    const now = new Date().toISOString();
+    const sevenDaysLater = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const events = response?.data.items;
-  if (events && events.length) {
+    const response = await calendar.events.list({
+      calendarId: CALENDAR_ID,
+      timeMin: now,
+      timeMax: sevenDaysLater,
+      singleEvents: true,
+      orderBy: 'startTime',
+      timeZone: 'Asia/Kolkata',
+    });
+
+    const events = response.data.items;
+    if (!events || events.length === 0) {
+      console.log('No upcoming events found.');
+      return sendResponse(res, 'No upcoming events found.', [], true, 200);
+    }
+
     const formattedEvents = events.map(event => {
       const start = event.start?.dateTime || event.start?.date;
       const end = event.end?.dateTime || event.end?.date;
@@ -74,89 +58,81 @@ export const listEvents = async (req: Request, res: Response) => {
       return {
         summary: event.summary || 'No title',
         description: event.description || 'No description',
-        startDate: (start),
-        start: (start),
-        endTime: (end),
-        meetingLink: event.hangoutLink || 'https://meet.google.com/egt-anwa-jub'
+        startDate: start,
+        start,
+        endTime: end,
+        meetingLink: event.hangoutLink || 'https://meet.google.com/egt-anwa-jub',
       };
     });
-    return sendResponse(res, 'Events data fetched successfully',formattedEvents,true,200);
-  }
-    else {
-    console.log('No upcoming events found.');
-    return sendResponse(res, 'Internal Server Error', null, false, 500);
 
+    return sendResponse(res, 'Events data fetched successfully', formattedEvents, true, 200);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return sendResponse(res, 'Failed to fetch events', null, false, 500);
   }
 };
 
-// Create a new event
+// Create a new event in Google Calendar
 export const createEvent = async (req: Request, res: Response) => {
-  const { code } = req.query; 
-
-
-  const {summary,description,start ,end } = req.body;
-  const calendar = google.calendar({ version: 'v3', auth });
-
-  const event = {
-    summary: summary,
-    description: description,
-    start: {
-      dateTime: start,
-      timeZone: 'Asia/Kolkata',
-    },
-    end: {
-      dateTime: end,
-      timeZone: 'Asia/Kolkata',
-    },
-    conferenceData: {
-      createRequest: {
-        requestId: uuidv4(),
-      },
-    }
-    }
+  const { summary, description, start, end } = req.body;
+  if (!summary || !start || !end) {
+    return sendResponse(res, 'Summary, start and end date are required', null, false, 400);
+  }
 
   try {
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    const event: calendar_v3.Schema$Event = {
+      summary,
+      description,
+      start: {
+        dateTime: start,
+        timeZone: 'Asia/Kolkata',
+      },
+      end: {
+        dateTime: end,
+        timeZone: 'Asia/Kolkata',
+      },
+      conferenceData: {
+        createRequest: {
+          requestId: uuidv4(),
+        },
+      },
+    };
+
     const response = await calendar.events.insert({
       calendarId: CALENDAR_ID,
       requestBody: event,
       conferenceDataVersion: 1,
     });
 
-    if (response.status === 200 && response.statusText === 'OK') {
-      console.log(response.data);
-      return sendResponse(res, 'created event Successfully', null, true, 200);
-      
+    if (response.status === 200) {
+      console.log('Event created:', response.data);
+      return sendResponse(res, 'Event created successfully', response.data, true, 200);
     } else {
-      let errorMessage = 'Failed to create event.';
-      switch (response.status) {
-        case 400:
-          errorMessage = 'Invalid request. Check event details.';
-          break;
-        case 403:
-          errorMessage = 'Permission denied. Check service account access.';
-          break;
-        default:
-          errorMessage = response.statusText;
-      }
-
-      throw new Error(errorMessage);
+      console.warn('Unexpected status from Google API:', response.status, response.statusText);
+      return sendResponse(res, 'Failed to create event', null, false, response.status);
     }
-  } catch (error) {
-    console.error(`Error at createEvent --> ${error}`);
-    return sendResponse(res, 'Internal Server Error', null, false, 500);
+  } catch (error: any) {
+    console.error('Error creating event:', error);
+    const message = error?.errors?.[0]?.message || error.message || 'Internal Server Error';
+    return sendResponse(res, message, null, false, 500);
   }
 };
 
-export const updateEvent = async (req, res) => {
+// Update an existing event
+export const updateEvent = async (req: Request, res: Response) => {
   const { eventId } = req.params;
   const { summary, description, start, end } = req.body;
 
   if (!summary || !start || !end) {
-    return res.status(400).json({ error: 'Summary, start time, and end time are required.' });
+    return sendResponse(res, 'Summary, start and end date are required', null, false, 400);
   }
 
   try {
-    const event = {
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    const event: calendar_v3.Schema$Event = {
       summary,
       description,
       start: {
@@ -168,146 +144,41 @@ export const updateEvent = async (req, res) => {
         timeZone: 'Asia/Kolkata',
       },
     };
-    const calendar = google.calendar({ version: 'v3', auth });
+
     const response = await calendar.events.update({
-      calendarId: 'primary',
-      eventId: eventId,
+      calendarId: CALENDAR_ID,
+      eventId,
       requestBody: event,
-      conferenceDataVersion: 1, 
+      conferenceDataVersion: 1,
     });
 
-    res.status(200).json({
-      message: 'Event updated successfully',
-      data: response.data,
-    });
-  } catch (error) {
+    return sendResponse(res, 'Event updated successfully', response.data, true, 200);
+  } catch (error: any) {
     console.error('Error updating event:', error);
-    res.status(500).json({ error: 'Failed to update event.' });
+    const message = error?.errors?.[0]?.message || error.message || 'Failed to update event';
+    return sendResponse(res, message, null, false, 500);
   }
 };
 
+// Delete an event by eventId (optional)
+export const deleteEvent = async (req: Request, res: Response) => {
+  const { eventId } = req.params;
 
-// Get date-time string for calender
-// const dateTimeForCalander = () => {
+  if (!eventId) {
+    return sendResponse(res, 'Event ID is required', null, false, 400);
+  }
 
-//     let date = new Date();
+  try {
+    const calendar = google.calendar({ version: 'v3', auth });
+    await calendar.events.delete({
+      calendarId: CALENDAR_ID,
+      eventId,
+    });
 
-//     let year = date.getFullYear();
-//     let month = date.getMonth() + 1;
-//     if (month < 10) {
-//         month = `0${month}`;
-//     }
-//     let day = date.getDate();
-//     if (day < 10) {
-//         day = `0${day}`;
-//     }
-//     let hour = date.getHours();
-//     if (hour < 10) {
-//         hour = `0${hour}`;
-//     }
-//     let minute = date.getMinutes();
-//     if (minute < 10) {
-//         minute = `0${minute}`;
-//     }
-
-//     let newDateTime = `${year}-${month}-${day}T${hour}:${minute}:00.000${TIMEOFFSET}`;
-
-//     let event = new Date(Date.parse(newDateTime));
-
-//     let startDate = event;
-//     // Delay in end time is 1
-//     let endDate = new Date(new Date(startDate).setHours(startDate.getHours()+1));
-
-//     return {
-//         'start': startDate,
-//         'end': endDate
-//     }
-// };
-
-// Insert new event to Google Calendar
-// const insertEvent = async (event) => {
-
-//     try {
-//         let response = await calendar.events.insert({
-//             auth: auth,
-//             calendarId: calendarId,
-//             resource: event
-//         });
-    
-//         if (response['status'] == 200 && response['statusText'] === 'OK') {
-//             return 1;
-//         } else {
-//             return 0;
-//         }
-//     } catch (error) {
-//         console.log(`Error at insertEvent --> ${error}`);
-//         return 0;
-//     }
-// };
-
-// let dateTime = dateTimeForCalander();
-
-// // Event for Google Calendar
-// let event = {
-//     'summary': `This is the summary.`,
-//     'description': `This is the description.`,
-//     'start': {
-//         'dateTime': dateTime['start'],
-//         'timeZone': 'Asia/Kolkata'
-//     },
-//     'end': {
-//         'dateTime': dateTime['end'],
-//         'timeZone': 'Asia/Kolkata'
-//     }
-// };
-
-// insertEvent(event)
-//     .then((res) => {
-//         console.log(res);
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     });
-
-// Get all the events between two dates
-// const getEvents = async (dateTimeStart, dateTimeEnd) => {
-
-//     try {
-//         let response = await calendar.events.list({
-//             auth: auth,
-//             calendarId: calendarId,
-//             timeMin: dateTimeStart,
-//             timeMax: dateTimeEnd,
-//             timeZone: 'Asia/Kolkata'
-//         });
-    
-//         let items = response['data']['items'];
-//         return items;
-//     } catch (error) {
-//         console.log(`Error at getEvents --> ${error}`);
-//         return 0;
-//     }
-// };
-
-
-// Delete an event from eventID
-// const deleteEvent = async (eventId) => {
-
-//     try {
-//         let response = await calendar.events.delete({
-//             auth: auth,
-//             calendarId: calendarId,
-//             eventId: eventId
-//         });
-
-//         if (response.data === '') {
-//             return 1;
-//         } else {
-//             return 0;
-//         }
-//     } catch (error) {
-//         console.log(`Error at deleteEvent --> ${error}`);
-//         return 0;
-//     }
-// };
-
+    return sendResponse(res, 'Event deleted successfully', null, true, 200);
+  } catch (error: any) {
+    console.error('Error deleting event:', error);
+    const message = error?.errors?.[0]?.message || error.message || 'Failed to delete event';
+    return sendResponse(res, message, null, false, 500);
+  }
+};

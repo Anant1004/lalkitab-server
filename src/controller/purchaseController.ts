@@ -49,6 +49,34 @@ export const getAllPurchase = async (req: Request, res: Response) => {
   }
 }
 
+export const updatePaymentStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { paymentStatus } = req.body;
+
+    // Check for valid status
+    const validStatuses = ['Pending', 'Completed', 'Rejected'];
+    if (!validStatuses.includes(paymentStatus)) {
+      return sendResponse(res, 'Invalid payment status', null, false, 400);
+    }
+
+    const updatedPurchase = await db.Purchase.findByIdAndUpdate(
+      id,
+      { paymentStatus },
+      { new: true }
+    );
+
+    if (!updatedPurchase) {
+      return sendResponse(res, 'Purchase not found', null, false, 404);
+    }
+
+    return sendResponse(res, 'Payment status updated successfully', updatedPurchase);
+  } catch (error) {
+    console.error(error);
+    return sendResponse(res, 'Internal Server Error', null, false, 500);
+  }
+};
+
 export const getPurchase = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
