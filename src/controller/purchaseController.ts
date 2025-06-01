@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { sendResponse } from '../utils/responseUtils';
+import mongoose from 'mongoose';
 import db from '../model';
 import { uploadToCloudinary } from '../utils/storage';
 interface MulterRequest extends Request {
@@ -33,6 +34,42 @@ export const makePurchase = async (req: MulterRequest, res: Response) => {
   } catch (error) {
     console.error(error);
     return sendResponse(res, 'Internal Server Error', null, false, 500);
+  }
+};
+
+export const checkPurchaseStatus = async (req: Request, res: Response) => {
+  try {
+    const { userId, courseId } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid userId or courseId" });
+    }
+
+    const purchase = await db.Purchase.findOne({
+      userId,
+      courseId,
+      paymentStatus: 'Completed'
+    }).select("-paymentProof -purchaseDate -__v")
+
+    if (purchase) {
+      return res.status(200).json({
+        success: true,
+        message: "Course purchase is completed",
+        data: purchase
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: "Course not purchased or payment not completed"
+      });
+    }
+
+  } catch (error) {
+    console.error("Error checking purchase status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
   }
 };
 

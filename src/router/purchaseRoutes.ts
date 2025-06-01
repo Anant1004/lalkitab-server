@@ -11,4 +11,6 @@ router.route('/get-purchase/:userId').get(isAuthenticated,controller.PurchaseCon
 router.route('/get-total-collection').get(isAuthenticated,hasAdminAccess,controller.PurchaseController.getTotalFeeCollected);
 router.route('/validate/:userId/:courseId').get(isAuthenticated,controller.PurchaseController.validatePurchase)
 router.route('/update-status/:id').put(controller.PurchaseController.updatePaymentStatus)
+router.route('/check-payment-status').post(isAuthenticated,controller.PurchaseController.checkPurchaseStatus)
+
 export default router;
