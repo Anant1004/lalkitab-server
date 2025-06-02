@@ -52,10 +52,13 @@ export const checkPurchaseStatus = async (req: Request, res: Response) => {
     }).select("-paymentProof -purchaseDate -__v")
 
     if (purchase) {
+    const videos = await db.YouTube.find({courseId}).select("-createdAt -updatedAt -__v -courseId")
+
       return res.status(200).json({
         success: true,
         message: "Course purchase is completed",
-        data: purchase
+        data: purchase,
+        videos:videos
       });
     } else {
       return res.status(200).json({
