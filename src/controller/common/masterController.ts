@@ -87,21 +87,24 @@ export const getCourseSoldCount = async (req: Request, res: Response)=>{
 export const getTotalCollectionByMonth = async (req: Request, res: Response) => {
   try {
     const purchases = await db.Purchase.find({});
-    if (!purchases) {
+    if (!purchases || purchases.length === 0) {
       return sendResponse(res, 'No course sold', null, false, 404);
     }
-    const monthlyCollection = [];
-    purchases.forEach(async(purchase) => {
-      const purchaseDate = purchase.purchaseDate;
-      const month = purchaseDate.getMonth();
-      const course = await db.Course.findById(purchase.courseId)
-      const coursePrice = course.price;
+
+    const monthlyCollection: number[] = [];
+
+    for (const purchase of purchases) {
+      const purchaseDate = new Date(purchase.purchaseDate);
+      const month = purchaseDate.getMonth(); // 0 (Jan) to 11 (Dec)
+
+      const course = await db.Course.findById(purchase.courseId);
+      const coursePrice = course?.price || 0;
 
       if (!monthlyCollection[month]) {
         monthlyCollection[month] = 0;
       }
       monthlyCollection[month] += coursePrice;
-    });
+    }
 
     return sendResponse(res, 'Collection fetched successfully', monthlyCollection);
   } catch (error) {
@@ -109,3 +112,4 @@ export const getTotalCollectionByMonth = async (req: Request, res: Response) => 
     return sendResponse(res, 'Internal Server Error', null, false, 500);
   }
 };
+
