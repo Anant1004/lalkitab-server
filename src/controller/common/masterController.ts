@@ -73,8 +73,8 @@ export const getCourseSoldCount = async (req: Request, res: Response)=>{
       console.log(item, item._id)
       const course =await db.Course.findById(item._id)
       console.log(course)
-      response.course.push(course.title);
-      response.count.push(item.count);
+      response.course.push(course?.title);
+      response.count.push(item?.count);
     })
 
     return sendResponse(res, 'Active Events fetched successfully', response);
